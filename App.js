@@ -24,6 +24,7 @@ async function registerForPushNotificationsAsync() {
         const {status: existingStatus} = await Notifications.getPermissionsAsync();
         let finalStatus = existingStatus;
         if (existingStatus !== 'granted') {
+            console.log('Permission not granted')
             const {status} = await Notifications.requestPermissionsAsync();
             finalStatus = status;
         }
@@ -56,18 +57,15 @@ export default function App() {
 
     const [queries, setQueries] = useState([]);
 
-
     useEffect(() => {
         getQueriesFromDb();
     }, []);
 
     const getQueriesFromDb = () => {
-        console.log("Getting queries man")
-        axios.get('http://192.168.0.247:3000/queries')
+        axios.get('http://192.168.0.247:3000/get-queries')
             .then(response => {
                 if (response.data.success) {
                     setQueries(response.data.queries);
-                    console.log("Success")
                     console.log(queries)
                 }
             })
@@ -77,21 +75,32 @@ export default function App() {
     };
 
     useEffect(() => {
-        // Define interactive notification actions
-        const actions = [
-            {
-                identifier: 'ACTION_ONE',
-                buttonTitle: 'Action One',
-            },
-            {
-                identifier: 'ACTION_TWO',
-                buttonTitle: 'Action Two',
-            },
-        ];
-
         try {
             // Notifications.setNotificationCategoryAsync('INTERACTIVE_CATEGORY', actions);
-            Notifications.setNotificationCategoryAsync('INTERACTIVE_CATEGORY', actions, {showInForeground: true})
+            Notifications.setNotificationCategoryAsync('INTERACTIVE_CATEGORY',
+                [
+                {
+                    identifier: 'ACTION_ONE',
+                    buttonTitle: '1',
+                },
+                {
+                    identifier: 'ACTION_TWO',
+                    buttonTitle: '2',
+                },
+                {
+                    identifier: 'ACTION_THREE',
+                    buttonTitle: '3',
+                },
+                {
+                    identifier: 'ACTION_FOUR',
+                    buttonTitle: '4',
+                },
+                {
+                    identifier: 'ACTION_FIVE',
+                    buttonTitle: '5',
+                }
+            ],
+                {showInForeground: true})
         } catch (e) {
             console.log(e)
         }
@@ -103,15 +112,7 @@ export default function App() {
         }, []);
 
     const handlePress = async () => {
-        // Schedule a notification using the defined category
-        await Notifications.scheduleNotificationAsync({
-            content: {
-                title: 'Interactive Notification',
-                body: 'Tap to see actions',
-            },
-            trigger: null,
-            categoryId: 'INTERACTIVE_CATEGORY',
-        });
+        await sendPushNotification(expoPushToken, 'How are you feeling today?', 'INTERACTIVE_CATEGORY')
     };
 
     //------------------------------------------------------------------------------------
@@ -122,10 +123,13 @@ export default function App() {
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
             setNotification(notification);
             console.log('Notification: ' + notification.request.content.title, notification.request.content.body);
+            console.log(notification.request.content.data);
         });
 
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+            console.log('Response: ');
             console.log(response);
+            console.log(response.notification.request.content.data);
         });
 
         return () => {
@@ -150,7 +154,7 @@ export default function App() {
                 title="Press to Send Interactive Notification"
                 onPress={async () => {
                     await handlePress(expoPushToken);
-                    console.log( await getNotificationCategoriesAsync())
+                    // console.log( await getNotificationCategoriesAsync())
                 }}
             />
             <Button

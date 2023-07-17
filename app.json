@@ -15,7 +15,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pineapple.trackstar"
     },
     "android": {
       "adaptiveIcon": {
@@ -29,8 +30,7 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-    ],
+    "plugins": [],
     "extra": {
       "eas": {
         "projectId": "75fca0f9-e003-4950-8540-088a1bd3d1a5"
