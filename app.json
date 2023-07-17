@@ -21,10 +21,20 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.pineapple.trackstar",
+      "versionCode": 1,
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "75fca0f9-e003-4950-8540-088a1bd3d1a5"
+      }
     }
   }
 }
