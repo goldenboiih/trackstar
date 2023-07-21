@@ -1,16 +1,16 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import Query from "./query";
 
 export default function QueryList({questions})
 {
     return (
-        <View>
+        <ScrollView>
             {questions.map((question, index) => (
                 <View key={index}>
                     <Query question={question}/>
                 </View>
             ))}
-        </View>
+        </ScrollView>
     );
 }
