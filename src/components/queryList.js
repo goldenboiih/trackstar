@@ -2,12 +2,12 @@ import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import Query from "./query";
 
-export default function QueryList({ questions }) {
+export default function QueryList({ questions, getQueriesFromDb }) {
     return (
         <ScrollView style={styles.container}>
             {questions.map((question, index) => (
                 <View key={index} style={styles.queryContainer}>
-                    <Query question={question} />
+                    <Query getQueriesFromDb={getQueriesFromDb} question={question} />
                 </View>
             ))}
         </ScrollView>

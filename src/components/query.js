@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import axios from "axios";
 
-export default function Query({ question }) {
+export default function Query({ question, getQueriesFromDb }) {
 
     const setAnswer = (answer) => {
         console.log(question.id, answer);
@@ -13,9 +13,11 @@ export default function Query({ question }) {
                 answered: true
             })
             console.log('Answer sent')
+            getQueriesFromDb()
         } catch (error) {
             console.error('Error sending request:' + error);
         }
+
     }
 
     return (

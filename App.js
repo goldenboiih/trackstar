@@ -112,7 +112,7 @@ export default function App() {
                 <Text style={styles.headerText}>Your Expo Push Token:</Text>
                 <Text style={styles.pushTokenText}>{expoPushToken}</Text>
             </View>
-            <QueryList questions={queries} />
+            <QueryList getQueriesFromDb={getQueriesFromDb} questions={queries} />
             <View style={styles.buttonContainer}>
                 <Button
                     title="Refresh Queries"
