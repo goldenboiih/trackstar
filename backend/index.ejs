@@ -2,17 +2,105 @@
 <html>
 <head>
     <title>Admin Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-top: 30px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        form label {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        form input[type="text"],
+        form input[type="submit"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 15px;
+        }
+
+        form input[type="submit"] {
+            background-color: #3498db;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        form input[type="submit"]:hover {
+            background-color: #2c82c9;
+        }
+
+        #query-table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #query-table th,
+        #query-table td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        #query-table th {
+            background-color: #f8f8f8;
+            font-weight: bold;
+        }
+
+        #query-table tr:nth-child(even) {
+            background-color: #f0f0f0;
+        }
+
+        #token {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+    </style>
 </head>
 <body>
-<h1>Add Query to Database</h1>
-<form action="/add-query" method="POST">
-    <label for="query">Query:</label>
-    <input type="text" id="query" name="query" required><br><br>
-    <input type="submit" value="Submit">
-</form>
+<div class="container" style="text-align: center;">
+    <h1>Add Query to Database</h1>
+    <form action="/add-query" method="POST">
+        <input type="text" id="query" name="query" required>
+        <input type="submit" value="Submit">
+    </form>
+</div>
 
-<h1>Send Notifications</h1>
-<div>
+<div class="container" style="text-align: center;">
+    <h1>Send Notifications</h1>
     <form action="/notify" method="post">
         <table id="query-table">
             <tr>
@@ -30,9 +118,10 @@
                 </tr>
             <% }) %>
         </table>
-        <br><br>
+        <br>
         <label for="token">ExpoToken</label>
-        <input type="text" id="token" name="token" placeholder="ExponentPushToken[nsfvcTJJYEaCICR7kfTtLG]" required><br><br>
+        <input type="text" id="token" name="token" placeholder="ExponentPushToken[nsfvcTJJYEaCICR7kfTtLG]" required>
+        <br>
         <input type="submit" value="Send Notification">
     </form>
 </div>
@@ -46,7 +135,6 @@
             }
         });
     }
-
 </script>
 </body>
 </html>

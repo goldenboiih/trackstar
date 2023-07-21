@@ -24,7 +24,7 @@ const pool = new Pool({
 
 app.get('/', (req, res) => {
     // Retrieve column queries from the database
-    pool.query('SELECT * FROM queries WHERE answered = false', (error, result) => {
+    pool.query('SELECT * FROM queries WHERE answered = false ORDER BY id', (error, result) => {
         if (error) {
             console.error('Error retrieving data', error);
             res.sendStatus(500);
