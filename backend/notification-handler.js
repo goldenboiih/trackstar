@@ -32,10 +32,9 @@ async function sendPushQuery(expoPushToken, query) {
         to: expoPushToken,
         sound: 'default',
         title: 'New Query!',
-        body: query,
-        // body: query?.question,
-        data: { query_id: query },
-        // data: { query_id: query?.id },
+        body: query?.question,
+        data: { query_id: query?.id,
+                query_question: query?.question,},
         categoryId: 'INTERACTIVE_CATEGORY'
     };
 

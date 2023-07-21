@@ -1,10 +1,11 @@
-import { View, StyleSheet, Button, Text } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import axios from "axios";
 
-export default function Query({question}) {
+export default function Query({ question }) {
 
     const setAnswer = (answer) => {
-        console.log(question.id, answer)
+        console.log(question.id, answer);
         try {
             axios.post('http://192.168.0.247:3000/send-answer', {
                 id: question.id,
@@ -21,42 +22,41 @@ export default function Query({question}) {
         <View>
             <Text style={styles.question}>{question.question}</Text>
             <View style={styles.buttonContainer}>
-                <Button onPress={() => setAnswer(1)} style={styles.answerButton} title='1'/>
-                <Button onPress={() => setAnswer(2)} style={styles.answerButton} title='2'/>
-                <Button onPress={() => setAnswer(3)} style={styles.answerButton} title='3'/>
-                <Button onPress={() => setAnswer(4)} style={styles.answerButton} title='4'/>
-                <Button onPress={() => setAnswer(5)} style={styles.answerButton} title='5'/>
+                {[1, 2, 3, 4, 5].map((answer) => (
+                    <TouchableOpacity key={answer} onPress={() => setAnswer(answer)} style={[styles.answerButton, { backgroundColor: '#3498db' }]}>
+                        <Text style={styles.answerButtonText}>{answer}</Text>
+                    </TouchableOpacity>
+                ))}
             </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#add8e6',
-        alignItems: 'center',
-        justifyContent: 'center',
+    question: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        color: '#555',
     },
     buttonContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-around',
         height: 50,
-        width: 200
-    },
-    question: {
-        backgroundColor: 'green',
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginBottom: 10, // Add some margin at the bottom to separate from the buttons
+        width: 300,
+        marginTop: 10,
     },
     answerButton: {
-        // backgroundColor: 'blue',
-        // color: '#fff',
-        // fontSize: 20,
-        // fontWeight: 'bold',
-        // marginHorizontal: 40
+        flex: 1,
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 5,
+    },
+    answerButtonText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold',
     },
 });

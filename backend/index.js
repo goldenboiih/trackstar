@@ -65,11 +65,13 @@ app.post('/notify', async (req, res) => {
     const {token, id} = req.body;
     console.log(req.body)
     console.log('/notify', token, id)
+    const query = (await pool.query('SELECT * FROM queries WHERE id = ($1)', [id])).rows[0];
+    console.log(query)
     try {
-        await sendPushQuery(token, id)
+        await sendPushQuery(token, query)
     } catch (error) {
         console.error('Error sending push notification', error);
-        res.status(500).json({error: 'An error occurred while writing into db'});
+        res.status(500).json({error: 'An error occurred sending notification'});
     }
 });
 
