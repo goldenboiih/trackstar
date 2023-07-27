@@ -1,13 +1,14 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import axios from "axios";
+import CONFIG from "../../config.json";
 
 export default function Query({ question, getQueriesFromDb }) {
 
     const setAnswer = (answer) => {
         console.log(question.id, answer);
         try {
-            axios.post('http://192.168.0.247:3000/send-answer', {
+            axios.post('http://' + CONFIG.localIp + ':3000/send-answer', {
                 id: question.id,
                 answer: answer,
                 answered: true

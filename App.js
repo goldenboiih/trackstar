@@ -6,6 +6,8 @@ import { sendPushNotification } from "./backend/notification-handler";
 import axios from 'axios';
 import QueryList from "./src/components/queryList";
 
+const CONFIG = require('./config.json');
+
 export default function App() {
     const [expoPushToken, setExpoPushToken] = useState('');
     const [notification, setNotification] = useState(false);
@@ -50,7 +52,7 @@ export default function App() {
     }, []);
 
     const getQueriesFromDb = () => {
-        axios.get('http://192.168.0.247:3000/get-queries')
+        axios.get('http://' + CONFIG.localIp + ':3000/get-queries')
             .then(response => {
                 if (response.data.success) {
                     setQueries(response.data.queries);
@@ -88,7 +90,7 @@ export default function App() {
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
             console.log('Response: ');
             try {
-                axios.post('http://192.168.0.247:3000/send-answer', {
+                axios.post('http://' + CONFIG.localIp + ':3000/send-answer', {
                     id: notification.request.content.data.query_id,
                     answer: parseInt(response.actionIdentifier),
                     answered: true
