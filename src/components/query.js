@@ -2,8 +2,11 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import axios from "axios";
 import CONFIG from "../../config.json";
+import * as Notifications from "expo-notifications";
+import { AppContext } from "../../App";
 
 export default function Query({ question, getQueriesFromDb }) {
+    const { expoPushToken } = useContext(AppContext);
 
     const setAnswer = (answer) => {
         console.log(question.id, answer);

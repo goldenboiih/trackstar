@@ -7,6 +7,7 @@ import axios from 'axios';
 import QueryList from "./src/components/queryList";
 
 const CONFIG = require('./config.json');
+export const AppContext = createContext();
 
 export default function App() {
     const [expoPushToken, setExpoPushToken] = useState('');
@@ -14,7 +15,10 @@ export default function App() {
     const notificationListener = useRef();
     const responseListener = useRef();
 
+    // Create context for providing expo push token to other components
+
     const [queries, setQueries] = useState([]);
+
     async function registerForPushNotificationsAsync() {
         let token;
         if (Device.isDevice) {
@@ -109,20 +113,22 @@ export default function App() {
     }, []);
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.headerText}>Your Expo Push Token:</Text>
-                <Text style={styles.pushTokenText}>{expoPushToken}</Text>
-            </View>
-            <QueryList getQueriesFromDb={getQueriesFromDb} questions={queries} />
-            <View style={styles.buttonContainer}>
-                <Button
-                    title="Refresh Queries"
-                    onPress={() => getQueriesFromDb()}
-                    color="#3498db"
-                />
-            </View>
-        </SafeAreaView>
+        <AppContext.Provider value={{expoPushToken}}>
+            <SafeAreaView style={styles.container}>
+                <View style={styles.header}>
+                    <Text style={styles.headerText}>Your Expo Push Token:</Text>
+                    <Text style={styles.pushTokenText}>{expoPushToken}</Text>
+                </View>
+                <QueryList getQueriesFromDb={getQueriesFromDb} questions={queries}/>
+                <View style={styles.buttonContainer}>
+                    <Button
+                        title="Refresh Queries"
+                        onPress={() => getQueriesFromDb()}
+                        color="#3498db"
+                    />
+                </View>
+            </SafeAreaView>
+        </AppContext.Provider>
     );
 }
 
