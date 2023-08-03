@@ -86,7 +86,7 @@ app.post('/add-query', async (req, res) => {
                 console.error('Error inserting data', error);
                 res.sendStatus(500);
             } else {
-                res.sendStatus(200);
+                res.redirect('/');
             }
         });
 });
