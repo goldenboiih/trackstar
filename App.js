@@ -2,22 +2,21 @@ import React, { createContext, useEffect, useRef, useState } from 'react';
 import { Button, Platform, StyleSheet, Text, View, SafeAreaView } from 'react-native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import { sendPushNotification } from "./backend/notification-handler";
 import axios from 'axios';
 import QueryList from "./src/components/queryList";
+import async from "async";
 
 const CONFIG = require('./config.json');
+// Create context for providing expo push token to other components
 export const AppContext = createContext();
 
 export default function App() {
     const [expoPushToken, setExpoPushToken] = useState('');
     const [notification, setNotification] = useState(false);
+    const [queries, setQueries] = useState([]);
+
     const notificationListener = useRef();
     const responseListener = useRef();
-
-    // Create context for providing expo push token to other components
-
-    const [queries, setQueries] = useState([]);
 
     async function registerForPushNotificationsAsync() {
         let token;
@@ -33,6 +32,7 @@ export default function App() {
                 alert('Failed to get push token for push notification!');
                 return;
             }
+            // token = (await Notifications.getDevicePushTokenAsync()).data;
             token = (await Notifications.getExpoPushTokenAsync()).data;
             console.log(token);
         } else {
@@ -40,7 +40,7 @@ export default function App() {
         }
 
         if (Platform.OS === 'android') {
-            Notifications.setNotificationChannelAsync('default', {
+            await Notifications.setNotificationChannelAsync('default', {
                 name: 'default',
                 importance: Notifications.AndroidImportance.MAX,
                 vibrationPattern: [0, 250, 250, 250],
@@ -49,11 +49,6 @@ export default function App() {
         }
         return token;
     }
-
-    useEffect(() => {
-        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-        getQueriesFromDb();
-    }, []);
 
     const getQueriesFromDb = () => {
         axios.get('http://' + CONFIG.localIp + ':3000/get-queries')
@@ -83,34 +78,50 @@ export default function App() {
     }, []);
 
     useEffect(() => {
-        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+        registerForPushNotificationsAsync().then(token => {
+            setExpoPushToken(token);
+            console.log('expoPushToken: ' + token); // Log the token here
+        });
+        getQueriesFromDb();
+        return () => {}
+    }, []);
 
+    // Notification Received Listener
+    useEffect(() => {
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
             setNotification(notification);
             console.log('Notification: ' + notification.request.content.title, notification.request.content.body);
             console.log(notification.request.content.data);
         });
 
+        return () => {
+            Notifications.removeNotificationSubscription(notificationListener.current);
+        };
+    }, []);
+
+    // Response listener for interactive notifications
+    useEffect(() => {
+        console.log('expoPushToken in responseListener: ' + expoPushToken);
+        console.log(notification)
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-            console.log('Response: ');
             try {
+                console.log('Notification in response listener: ' + notification.request.content.data)
                 axios.post('http://' + CONFIG.localIp + ':3000/send-answer', {
                     id: notification.request.content.data.query_id,
-                    answer: parseInt(response.actionIdentifier),
-                    answered: true
+                    token: expoPushToken,
+                    answer: parseInt(response.actionIdentifier)
                 })
                 console.log('Answer sent')
                 getQueriesFromDb()
             } catch (error) {
-                console.error('Error sending request:' + error);
+                console.error('Error sending answer via notification:' + error);
             }
         });
 
         return () => {
-            Notifications.removeNotificationSubscription(notificationListener.current);
             Notifications.removeNotificationSubscription(responseListener.current);
         };
-    }, []);
+    }, [expoPushToken, notification]);
 
     return (
         <AppContext.Provider value={{expoPushToken}}>

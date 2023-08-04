@@ -31,7 +31,7 @@ async function sendPushQuery(expoPushToken, query) {
     const message = {
         to: expoPushToken,
         sound: 'default',
-        title: 'New Query!',
+        title: 'Please answer the query!',
         body: query?.question,
         data: { query_id: query?.id,
                 query_question: query?.question,},

@@ -22,40 +22,48 @@ const pool = new Pool({
     database: 'db',
 });
 
-app.get('/', (req, res) => {
-    // Retrieve column queries from the database
-    pool.query('SELECT * FROM queries WHERE answered = false ORDER BY id', (error, result) => {
-        if (error) {
-            console.error('Error retrieving data', error);
-            res.sendStatus(500);
-        } else {
-            const queries = result.rows;
-            res.render(path.join(__dirname, 'index.ejs'), {queries});
-        }
-    });
+app.get('/', async (req, res) => {
+    try {
+        // Retrieve column queries from the database
+        const queriesResult = await pool.query('SELECT * FROM queries ORDER BY id');
+        const queries = queriesResult.rows;
+
+        const usersResult = await pool.query('SELECT * FROM users ORDER BY id');
+        const users = usersResult.rows;
+
+        res.render(path.join(__dirname, 'index.ejs'), { queries, users });
+    } catch (error) {
+        console.error('Error retrieving data', error);
+        res.sendStatus(500);
+    }
 });
 
 // Endpoint to handle button clicks
 app.post('/send-answer', async (req, res) => {
     try {
         // Destructuring request body
-        const {id, answer} = req.body;
-        await pool.query('UPDATE queries SET answer = ($1), answered = true WHERE id = ($2)', [answer, id]);
-
+        const {id, token, answer} = req.body;
+        console.log(req.body)
+        console.log('Received answer:', id, token, answer);
+        // get today's date
+        const date = new Date();
+        // Insert answer into database
+        const user_id = (await pool.query('SELECT id FROM users WHERE expo_token = ($1)', [token])).rows[0].id;
+        await pool.query('INSERT INTO answers (query_id, user_id, answer, date) VALUES ($1, $2, $3, $4)', [id, user_id, answer, date]);
         res.status(200).json({message: 'Answer saved succesfully'});
+        console.log('Answer saved succesfully')
     } catch (error) {
-        console.error('Error inserting button content:', error);
+        console.error('Error inserting answer: ', error);
         res.status(500).json({error: 'An error occurred while writing into db'});
     }
 });
 
 app.get('/get-queries', async (req, res) => {
-    await pool.query('SELECT * FROM queries WHERE answered = false', (err, result) => {
+    await pool.query('SELECT * FROM queries', (err, result) => {
         if (err) {
-            console.error('Fehler bei der Abfrage:', err);
+            console.error('Error getting queries:', err);
             res.json({success: false, error: err});
         } else {
-            console.log('Ergebnis:', result.rows);
             res.json({success: true, queries: result.rows});
         }
     });
@@ -63,12 +71,19 @@ app.get('/get-queries', async (req, res) => {
 
 app.post('/notify', async (req, res) => {
     const {token, id} = req.body;
-    console.log(req.body)
-    console.log('/notify', token, id)
+    if (!token || !id) return res.status(400).json({error: 'Missing parameters. You need to specify at least one token and a query id'});
+    // console.log(req.body)
+    // console.log('/notify', token, id)
     const query = (await pool.query('SELECT * FROM queries WHERE id = ($1)', [id])).rows[0];
-    console.log(query)
+    // console.log(query)
     try {
-        await sendPushQuery(token, query)
+        // if multiple tokens are selected
+        if (Array.isArray(token)) {
+            for (let i = 0; i < token.length; i++) {
+                await sendPushQuery(token[i], query)
+            }
+        }
+        else await sendPushQuery(token, query)
     } catch (error) {
         console.error('Error sending push notification', error);
         res.status(500).json({error: 'An error occurred sending notification'});

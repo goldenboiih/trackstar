@@ -59,24 +59,24 @@
             background-color: #2c82c9;
         }
 
-        #query-table {
+        .table {
             border-collapse: collapse;
             width: 100%;
         }
 
-        #query-table th,
-        #query-table td {
+        .table th,
+        .table td {
             border: 1px solid #ccc;
             padding: 10px;
             text-align: center;
         }
 
-        #query-table th {
+        .table th {
             background-color: #f8f8f8;
             font-weight: bold;
         }
 
-        #query-table tr:nth-child(even) {
+        .table tr:nth-child(even) {
             background-color: #f0f0f0;
         }
 
@@ -102,7 +102,8 @@
 <div class="container" style="text-align: center;">
     <h1>Send Notifications</h1>
     <form action="/notify" method="post">
-        <table id="query-table">
+<!--        QUERIES-->
+        <table class="table" id="query-table">
             <tr>
                 <th>id</th>
                 <th>Question</th>
@@ -119,9 +120,25 @@
             <% }) %>
         </table>
         <br>
-        <label for="token">ExpoToken</label>
-        <input type="text" id="token" name="token" placeholder="ExponentPushToken[nsfvcTJJYEaCICR7kfTtLG]" required>
-        <br>
+<!--        USERS-->
+        <table class="table" id="user-table">
+            <tr>
+                <th>id</th>
+                <th>Username</th>
+                <th>Expo-Token</th>
+                <th>Send</th>
+            </tr>
+            <% users.forEach(user => { %>
+                <tr>
+                    <td><%= user.id %></td>
+                    <td><%= user.username %></td>
+                    <td><%= user.expo_token %></td>
+                    <td>
+                        <input type="checkbox" name="token" value="<%= user.expo_token %>">
+                    </td>
+                </tr>
+            <% }) %>
+        </table>
         <input type="submit" value="Send Notification">
     </form>
 </div>

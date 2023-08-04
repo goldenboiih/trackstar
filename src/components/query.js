@@ -1,27 +1,26 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import axios from "axios";
 import CONFIG from "../../config.json";
-import * as Notifications from "expo-notifications";
 import { AppContext } from "../../App";
 
 export default function Query({ question, getQueriesFromDb }) {
     const { expoPushToken } = useContext(AppContext);
 
-    const setAnswer = (answer) => {
-        console.log(question.id, answer);
+    const setAnswer = async (answer) => {
+        console.log('Question id: ' + question.id, 'Answer: ' + answer);
+
         try {
             axios.post('http://' + CONFIG.localIp + ':3000/send-answer', {
                 id: question.id,
+                token: expoPushToken,
                 answer: answer,
-                answered: true
             })
-            console.log('Answer sent')
+            console.log('Answer sent via Button inside application view')
             getQueriesFromDb()
         } catch (error) {
-            console.error('Error sending request:' + error);
+            console.error('Error sending answer inside application view' + error);
         }
-
     }
 
     return (
