@@ -82,8 +82,10 @@ app.post('/notify', async (req, res) => {
             for (let i = 0; i < token.length; i++) {
                 await sendPushQuery(token[i], query)
             }
+            res.status(200).json({message: 'Notification sent succesfully'});
         }
         else await sendPushQuery(token, query)
+        res.status(200).json({message: 'Notification sent succesfully'});
     } catch (error) {
         console.error('Error sending push notification', error);
         res.status(500).json({error: 'An error occurred sending notification'});

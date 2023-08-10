@@ -9,7 +9,6 @@ export default function Query({ question, getQueriesFromDb }) {
 
     const setAnswer = async (answer) => {
         console.log('Question id: ' + question.id, 'Answer: ' + answer);
-
         try {
             axios.post('http://' + CONFIG.localIp + ':3000/send-answer', {
                 id: question.id,
