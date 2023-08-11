@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "560880278297",
+    "project_id": "trackstar-a2673",
+    "storage_bucket": "trackstar-a2673.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:560880278297:android:c7ec4329e041d3946ec388",
+        "android_client_info": {
+          "package_name": "com.pineapple.trackstar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "560880278297-dn4ue75c4mjp20oackfa7ek673ku3ebl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pineapple.trackstar",
+            "certificate_hash": "65e16b7cd458cba84d6bbee9ca09a59836585b2c"
+          }
+        },
+        {
+          "client_id": "560880278297-r3v062i93dvan5l4udmrtac1fush4n88.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB73aevRC6fktr-qtCg-3Zx-gtx55qYTi4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "560880278297-r3v062i93dvan5l4udmrtac1fush4n88.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
